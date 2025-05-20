@@ -12,6 +12,50 @@ Este projeto utiliza o pacote `aws-lambda-go-api-proxy` para permitir que manipu
 - AWS CLI configurada
 - AWS SAM (opcional, para implantação local)
 
+## Configuração dos Pacotes 📦
+
+O `go mod` é o sistema de gerenciamento de dependências do Go. Ele permite que você defina, baixe e controle as versões dos pacotes usados no seu projeto. 🔄
+
+### Como funciona a configuração dos pacotes com `go mod`: 🛠️
+
+1. **Inicialização do Módulo** 🚀  
+  No terminal, execute:
+  ```sh
+  go mod init nome-do-modulo
+  ```
+  Isso cria um arquivo `go.mod` na raiz do projeto, que registra o nome do módulo e as dependências.
+
+2. **Adicionando Dependências** ➕  
+  Ao importar um pacote externo no seu código e rodar `go build` ou `go run`, o Go adiciona automaticamente a dependência ao `go.mod` e baixa o pacote.  
+  Exemplo:
+  ```go
+  import "github.com/aws/aws-lambda-go"
+  ```
+  Depois de rodar:
+  ```sh
+  go build
+  ```
+  O `go.mod` será atualizado com a dependência e sua versão.
+
+3. **Arquivo `go.sum`** 📝  
+  O Go cria/atualiza o arquivo `go.sum` para garantir a integridade das dependências baixadas. 🔒
+
+4. **Removendo Dependências Não Utilizadas** 🧹  
+  Execute:
+  ```sh
+  go mod tidy
+  ```
+  Isso remove dependências não utilizadas e adiciona as que faltam.
+
+### Exemplo de `go.mod`: 📄
+
+```go
+require (
+   github.com/aws/aws-lambda-go v1.48.0
+   github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
+)
+```
+
 ## Endpoints Disponíveis 🌐
 
 A API fornece dois endpoints:
@@ -23,7 +67,7 @@ A API fornece dois endpoints:
 
 1. Compile o binário para Linux:
     ```sh
-    GOOS=linux GOARCH=amd64 go build -o bootstrap main.go
+    env GOARCH=arm64 GOOS=linux go build -ldflags="-s -w -X 'main.env=$(ENV)'" -o bin/bootstrap .
     ```
 
 2. Crie um arquivo ZIP contendo o executável:
